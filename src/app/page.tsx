@@ -2,7 +2,7 @@ import { calculateProforma, DEFAULT_ASSUMPTIONS } from "@/lib/proforma";
 import { getAssumptions } from "@/lib/supabase";
 import { fmtDollar, fmtDollarFull, fmtPct, fmtSF, fmtMultiple, fmtNum } from "@/lib/fmt";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 function Metric({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
