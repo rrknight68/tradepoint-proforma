@@ -105,9 +105,9 @@ const FIELDS: Record<Tab, FieldDef[]> = {
 
 function KPI({ label, value }: { label: string; value: string }) {
   return (
-    <div style={{ background: "#151A24", border: "1px solid rgba(201,168,76,0.18)", padding: "14px 16px" }}>
+    <div style={{ borderBottom: "1px solid rgba(201,168,76,0.08)", padding: "10px 0" }}>
       <div className="stat-label mb-1">{label}</div>
-      <div className="stat-value text-[20px]">{value}</div>
+      <div className="display-gold text-[18px]">{value}</div>
     </div>
   );
 }
