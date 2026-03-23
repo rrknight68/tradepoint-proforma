@@ -180,21 +180,26 @@ export function calculateProforma(raw: Record<string, string | number>): Proform
   const ph2bSoft = ph2bArchEng + ph2bPermits + ph2bLegal + ph2bEnviro + ph2bMarketing + ph2bLoanInterest + ph2bOrigination;
 
   // ── Sponsor fees ──
+  // Per Excel SSOT v3.5.5:
+  // - CM fee (3%) is capitalized into TDC
+  // - Dev fee (2%), asset mgmt, and placement are paid from the raise (off-TDC)
+  //   but deducted from profit in the waterfall before equity split
   const devFeePct = n(a, "dev_fee_pct", 0.02);
   const cmFeePct = n(a, "cm_fee_pct", 0.03);
   const assetMgmtPerMonth = n(a, "asset_mgmt_per_month", 7500);
   const constructionMonths = n(a, "construction_months", 24);
   const absorptionMonths = n(a, "absorption_months", 12);
   const placementFeePct = n(a, "placement_fee_pct", 0.03);
-  const cogpEquityRaise = n(a, "cogp_equity_raise", 2500000);
 
-  const assetMgmt = assetMgmtPerMonth * constructionMonths; // ph1 only
-  const placementFee = placementFeePct * cogpEquityRaise; // ph1 only
+  // CM fee → TDC
+  const ph1Sponsor = cmFeePct * (landCost + ph1Hard + ph1Soft);
+  const ph2aSponsor = cmFeePct * (ph2aHard + ph2aSoft);
+  const ph2bSponsor = cmFeePct * (ph2bHard + ph2bSoft);
 
-  const ph1SponsorBase = (devFeePct + cmFeePct) * (landCost + ph1Hard + ph1Soft);
-  const ph1Sponsor = ph1SponsorBase + assetMgmt + placementFee;
-  const ph2aSponsor = (devFeePct + cmFeePct) * (ph2aHard + ph2aSoft);
-  const ph2bSponsor = (devFeePct + cmFeePct) * (ph2bHard + ph2bSoft);
+  // Off-TDC sponsor costs (deducted in waterfall)
+  const totalLandHardSoft = landCost + ph1Hard + ph2aHard + ph2bHard + ph1Soft + ph2aSoft + ph2bSoft;
+  const devFeeTotal = devFeePct * totalLandHardSoft;
+  const assetMgmtTotal = assetMgmtPerMonth * constructionMonths;
 
   // ── TDC ──
   const ph1TDC = landCost + ph1Hard + ph1Soft + ph1Sponsor;
@@ -225,9 +230,19 @@ export function calculateProforma(raw: Record<string, string | number>): Proform
 
   const gpEquity = n(a, "gp_equity", 500000);
   const landEquityCredit = n(a, "land_equity_credit", 2003827);
-  const equityGapNew = (1 - ltc) * ph1TDC - landEquityCredit - gpEquity;
 
-  const totalRaise = landCost + gpEquity + 180000 + 1599436 + Math.max(0, equityGapNew) + 400000 + 300000 + placementFee;
+  // Capital stack — hardcoded inputs from Excel SSOT v3.5.5
+  const benworthPayoff = n(a, "benworth_payoff", 2496173);
+  const pedroPayoff = n(a, "pedro_payoff", 680000);
+  const lpBuyout = n(a, "lp_buyout", 1599436);
+  const equityGapNew = n(a, "equity_gap", 1687818);
+  const raiseClosingCosts = n(a, "raise_closing_costs", 400000);
+  const raiseContingency = n(a, "raise_contingency", 300000);
+
+  // Placement fee on equity gap + closing + contingency
+  const placementFeeCalc = placementFeePct * (equityGapNew + raiseClosingCosts + raiseContingency);
+  const subtotalRaise = benworthPayoff + pedroPayoff + lpBuyout + equityGapNew + raiseClosingCosts + raiseContingency;
+  const totalRaise = subtotalRaise + placementFeeCalc;
 
   // ── Hold period ──
   const holdMonths = constructionMonths + absorptionMonths;
@@ -239,6 +254,9 @@ export function calculateProforma(raw: Record<string, string | number>): Proform
   const profitSplitCoGP = n(a, "profit_split_cogp", 0.50);
   const optionBPrefTranche = n(a, "option_b_pref_tranche", 4000000);
   const optionBEquityTranche = Math.max(0, totalRaise - optionBPrefTranche);
+
+  // Off-TDC sponsor costs deducted from profit before waterfall split
+  const offTdcSponsor = devFeeTotal + assetMgmtTotal + placementFeeCalc;
 
   // Option A — full equity
   const optACapital = totalRaise;
@@ -256,9 +274,10 @@ export function calculateProforma(raw: Record<string, string | number>): Proform
   const optBPrefIRR = prefRateSenior; // fixed rate
 
   // Option B — equity tranche
+  // Deduct senior interest AND off-TDC sponsor costs from profit before equity split
   const optBEqCapital = optionBEquityTranche;
   const optBEqPref = optBEqCapital * prefRateEquity * holdYears;
-  const optBEqSplit = Math.max(0, netProfit - optBPrefInterest - optBEqPref) * profitSplitCoGP;
+  const optBEqSplit = Math.max(0, netProfit - optBPrefInterest - offTdcSponsor - optBEqPref) * profitSplitCoGP;
   const optBEqTotalReturn = optBEqCapital + optBEqPref + optBEqSplit;
   const optBEqEM = optBEqCapital > 0 ? optBEqTotalReturn / optBEqCapital : 0;
   const optBEqIRR = holdYears > 0 && optBEqEM > 0 ? Math.pow(optBEqEM, 1 / holdYears) - 1 : 0;
@@ -315,6 +334,8 @@ export const DEFAULT_ASSUMPTIONS: Record<string, number> = {
   dev_fee_pct: 0.02, cm_fee_pct: 0.03,
   asset_mgmt_per_month: 7500, placement_fee_pct: 0.03,
   cogp_equity_raise: 2500000, gp_equity: 500000, land_equity_credit: 2003827,
+  benworth_payoff: 2496173, pedro_payoff: 680000, lp_buyout: 1599436,
+  equity_gap: 1687818, raise_closing_costs: 400000, raise_contingency: 300000,
   pref_rate_senior: 0.13, pref_rate_equity: 0.10,
   profit_split_cogp: 0.50, option_b_pref_tranche: 4000000,
   arch_eng_ph1: 377078, arch_eng_ph2a: 245933, arch_eng_ph2b: 102270,
