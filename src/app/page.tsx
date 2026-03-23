@@ -79,12 +79,15 @@ export default async function InvestorPage() {
                 { label: "Square feet", vals: [p.ph1.sf, p.ph2a.sf, p.ph2b.sf, p.totalSF], fmt: "sf" },
                 { label: "Sale price / SF", vals: [p.ph1.priceSF, p.ph2a.priceSF, p.ph2b.priceSF, p.weightedAvgPSF], fmt: "$" },
                 { label: "Gross revenue", vals: [p.ph1.revenue, p.ph2a.revenue, p.ph2b.revenue, p.grossRevenue], fmt: "dollar", accent: true },
+                { label: "Total dev cost", vals: [p.ph1.tdc, p.ph2a.tdc, p.ph2b.tdc, p.totalTDC], fmt: "dollar" },
+                { label: "Net profit", vals: [p.ph1.revenue - p.ph1.tdc, p.ph2a.revenue - p.ph2a.tdc, p.ph2b.revenue - p.ph2b.tdc, p.grossRevenue - p.totalTDC], fmt: "dollar", accent: true },
+                { label: "Profit margin", vals: [p.ph1.revenue > 0 ? (p.ph1.revenue - p.ph1.tdc) / p.ph1.revenue : 0, p.ph2a.revenue > 0 ? (p.ph2a.revenue - p.ph2a.tdc) / p.ph2a.revenue : 0, p.ph2b.revenue > 0 ? (p.ph2b.revenue - p.ph2b.tdc) / p.ph2b.revenue : 0, p.grossRevenue > 0 ? (p.grossRevenue - p.totalTDC) / p.grossRevenue : 0], fmt: "pct", accent: true },
               ].map(row => (
                 <tr key={row.label} style={{ borderBottom: "1px solid rgba(201,168,76,0.08)" }}>
                   <td className={`py-3 pr-4 ${row.accent ? "text-[#C9A84C]" : "text-[#8A95A8]"}`}>{row.label}</td>
                   {row.vals.map((v, i) => (
                     <td key={i} className={`mono text-right py-3 px-4 ${row.accent ? "text-[#C9A84C]" : "text-[#F0EDE5]"}`}>
-                      {row.fmt === "sf" ? fmtNum(v) : row.fmt === "$" ? fmtDollarFull(Math.round(v)) : row.fmt === "dollar" ? fmtDollar(v) : String(v)}
+                      {row.fmt === "pct" ? fmtPct(v) : row.fmt === "sf" ? fmtNum(v) : row.fmt === "$" ? fmtDollarFull(Math.round(v)) : row.fmt === "dollar" ? fmtDollar(v) : String(v)}
                     </td>
                   ))}
                 </tr>
