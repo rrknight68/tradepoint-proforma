@@ -1,9 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || anonKey;
 
-export const supabase = createClient(url, key);
+export const supabase = createClient(url, anonKey);
+const adminClient = createClient(url, serviceKey);
 
 export async function getAssumptions(): Promise<Record<string, string>> {
   const { data, error } = await supabase
@@ -23,7 +25,7 @@ export async function saveAssumptions(
     value,
     updated_at: new Date().toISOString(),
   }));
-  const { error } = await supabase
+  const { error } = await adminClient
     .from("tp_assumptions")
     .upsert(rows, { onConflict: "key" });
   if (error) throw error;
