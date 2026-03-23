@@ -4,8 +4,12 @@ const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || anonKey;
 
-export const supabase = createClient(url, anonKey);
-const adminClient = createClient(url, serviceKey);
+export const supabase = createClient(url, anonKey, {
+  global: { fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }) },
+});
+const adminClient = createClient(url, serviceKey, {
+  global: { fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }) },
+});
 
 export async function getAssumptions(): Promise<Record<string, string>> {
   const { data, error } = await supabase
