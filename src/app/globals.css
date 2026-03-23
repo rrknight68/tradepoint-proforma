@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+body {
+  background: #0A0F1E;
+  color: #F2EDE3;
+}
+
+.metric-card {
+  @apply bg-navy-mid border border-navy-light rounded-lg p-6;
+}
+
+.section-label {
+  @apply font-mono text-[10px] tracking-[3px] uppercase text-gold mb-4;
+}
+
+input[type="number"], input[type="text"] {
+  @apply bg-navy border border-navy-light rounded px-3 py-2 text-cream font-mono text-sm
+    focus:border-gold focus:outline-none transition-colors;
+}
