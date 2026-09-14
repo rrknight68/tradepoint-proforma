@@ -1,4 +1,4 @@
-// ── Trade Point Flex Industrial Proforma Engine ──────────────────
+// ── Trade Point Industrial Warehouse Proforma Engine ──────────────────
 // Single source of truth. Every displayed number flows from here.
 // Zero hardcoded outputs. Pure function, no side effects.
 
