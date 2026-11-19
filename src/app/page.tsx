@@ -68,7 +68,7 @@ export default async function InvestorPage() {
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(201,168,76,0.25)" }}>
                 <th className="stat-label text-left py-3 pr-4"></th>
-                {["Phase 1", "Phase 2A", "Phase 2B", "Total"].map(h => (
+                {["Phase 1 · Bldg B", "Phase 2A · Bldg A", "Phase 2B · Bldg C", "Total"].map(h => (
                   <th key={h} className="stat-label text-right py-3 px-4">{h}</th>
                 ))}
               </tr>

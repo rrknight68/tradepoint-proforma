@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Trade Point Industrial | Warehouse Condo Proforma",
-  description: "98,264 SF · 38 Units · Cape Coral FL — Vantage Point Investments",
+  description: "101,827 SF · 33 Units · Cape Coral FL — Vantage Point Investments",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

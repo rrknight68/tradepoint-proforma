@@ -318,15 +318,18 @@ export function calculateProforma(raw: Record<string, string | number>): Proform
 
 /** All assumption keys with default values */
 export const DEFAULT_ASSUMPTIONS: Record<string, number> = {
-  ph1_price_sf: 350, ph2a_price_sf: 357.5, ph2b_price_sf: 367.5,
-  ph1_small_units: 8, ph1_small_sf: 2000,
-  ph1_mid_units: 8, ph1_mid_sf: 2400,
-  ph1_large_units: 4, ph1_large_sf: 3972,
-  ph2a_small_units: 4, ph2a_small_sf: 1750,
-  ph2a_mid_units: 8, ph2a_mid_sf: 2415,
-  ph2a_large_units: 2, ph2a_large_sf: 3500,
-  ph2b_premium_units: 4, ph2b_premium_sf: 3464,
-  hard_cost_sf: 155, land_cost: 2343051, land_appraised: 4500000,
+  // v4.0 (2026-11-19): 33 units / 101,827 SF per PDS area calc 10-28-26; BBG File 0126025412 pricing.
+  // Phase 1 = Building B, Phase 2A = Building A, Phase 2B = Building C. Unit SF includes mezzanine.
+  ph1_price_sf: 368.79, ph2a_price_sf: 378, ph2b_price_sf: 367,
+  ph1_small_units: 4, ph1_small_sf: 1481,   // B · Unit D
+  ph1_mid_units: 4, ph1_mid_sf: 1565,       // B · Unit E
+  ph1_large_units: 16, ph1_large_sf: 3638,  // B · Unit F (2,998 + 640 mezz)
+  ph2a_small_units: 2, ph2a_small_sf: 2954, // A · Unit C
+  ph2a_mid_units: 2, ph2a_mid_sf: 2996,     // A · Unit B
+  ph2a_large_units: 2, ph2a_large_sf: 3171, // A · Unit A
+  ph2b_premium_units: 3, ph2b_premium_sf: 4396, // C · Units H/I/J (avg)
+  hard_cost_sf: 183.09, // ($17,643,218 Curran Young + $1,000,000 22-ft clear) / 101,827 SF
+  land_cost: 2343051, land_appraised: 4500000,
   ltc: 0.70, loan_rate: 0.085,
   ph1_draw_months: 12, ph2a_draw_months: 8, ph2b_draw_months: 5,
   broker_pct: 0.05, closing_pct: 0.0075, absorption_rate: 2,
