@@ -235,7 +235,7 @@ export function calculateProforma(raw: Record<string, string | number>): Proform
   const benworthPayoff = n(a, "benworth_payoff", 2496173);
   const pedroPayoff = n(a, "pedro_payoff", 680000);
   const lpBuyout = n(a, "lp_buyout", 1599436);
-  const equityGapNew = n(a, "equity_gap", 1687818);
+  const equityGapNew = n(a, "equity_gap", 1799937);
   const raiseClosingCosts = n(a, "raise_closing_costs", 400000);
   const raiseContingency = n(a, "raise_contingency", 300000);
 
@@ -338,7 +338,7 @@ export const DEFAULT_ASSUMPTIONS: Record<string, number> = {
   asset_mgmt_per_month: 7500, placement_fee_pct: 0.03,
   cogp_equity_raise: 2500000, gp_equity: 500000, land_equity_credit: 2003827,
   benworth_payoff: 2496173, pedro_payoff: 680000, lp_buyout: 1599436,
-  equity_gap: 1687818, raise_closing_costs: 400000, raise_contingency: 300000,
+  equity_gap: 1799937, raise_closing_costs: 400000, raise_contingency: 300000, // v4.1: equity_gap sized so raise = required equity (incl. 3% placement)
   pref_rate_senior: 0.13, pref_rate_equity: 0.10,
   profit_split_cogp: 0.50, option_b_pref_tranche: 4000000,
   arch_eng_ph1: 377078, arch_eng_ph2a: 245933, arch_eng_ph2b: 102270,
